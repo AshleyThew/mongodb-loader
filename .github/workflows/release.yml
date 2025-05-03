@@ -10,30 +10,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
-    - name: Get latest mongodb-driver-bom version
-      id: get_bom_version
-      run: |
-        latest_bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
-        echo "::set-output name=bom_version::$latest_bom_version"
+      - name: Get latest mongodb-driver-bom version
+        id: get_bom_version
+        run: |
+          latest_bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
+          echo "::set-output name=bom_version::$latest_bom_version"
 
-    - name: Build with Gradle
-      run: ./gradlew build -Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}
+      - name: Build with Gradle
+        run: ./gradlew build -Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}
 
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.get_bom_version.outputs.bom_version }}
-        release_name: Release ${{ steps.get_bom_version.outputs.bom_version }}
-        draft: false
-        prerelease: false
-        files: build/libs/*.jar
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_bom_version.outputs.bom_version }}
+          release_name: Release ${{ steps.get_bom_version.outputs.bom_version }}
+          draft: false
+          prerelease: false
+
+      - name: Upload JAR to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/your-plugin.jar
+          asset_name: your-plugin.jar
+          asset_content_type: application/java-archive
