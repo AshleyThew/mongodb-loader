@@ -2,6 +2,21 @@
 
 This plugin connects to MongoDB using the latest `mongodb-driver-sync` library.
 
+## Adding as a Dependency to Your Plugin
+
+To use MongoDB Loader in your own Spigot plugin, add the following to your `plugin.yml`:
+
+- If your plugin requires MongoDB Loader to be present:
+  ```yaml
+  depend: [MongoDBLoader]
+  ```
+- If your plugin can work without MongoDB Loader, but will use it if available:
+  ```yaml
+  softdepend: [MongoDBLoader]
+  ```
+
+This ensures your plugin loads in the correct order and can interact with MongoDB Loader if present.
+
 ## Building the Plugin
 
 1. Clone the repository:
