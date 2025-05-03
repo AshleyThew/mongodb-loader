@@ -32,3 +32,12 @@ This plugin connects to MongoDB using the latest `mongodb-driver-sync` library.
    ```
 
 3. The GitHub Actions workflow will automatically build and release the new version.
+
+## Manually Triggering the Workflow
+
+You can manually trigger the GitHub Actions workflow by following these steps:
+
+1. Go to the "Actions" tab in your GitHub repository.
+2. Select the "Release Plugin" workflow from the list on the left.
+3. Click the "Run workflow" button on the right.
+4. Optionally, specify any required inputs and click the "Run workflow" button again.
