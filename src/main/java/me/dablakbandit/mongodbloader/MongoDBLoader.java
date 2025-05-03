@@ -1,8 +1,8 @@
-package com.example.minecraftplugin;
+package me.dablakbandit.mongodbloader;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin {
+public class MongoDBLoader extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -10,7 +10,7 @@ public class Main extends JavaPlugin {
 
         // Confirm the mongo-driver-sync driver exists
         try {
-            Class.forName("com.mongodb.client.MongoClients");
+            Class.forName("com.mongodb.client.MongoClient");
             getLogger().info("MongoDB driver is present!");
         } catch (ClassNotFoundException e) {
             getLogger().severe("MongoDB driver is missing!");

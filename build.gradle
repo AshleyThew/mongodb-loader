@@ -1,7 +1,12 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+version = project.hasProperty('bom_version') ? project.bom_version : '1.0.0'
 
 repositories {
     mavenCentral()
@@ -10,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(platform("org.mongodb:mongodb-driver-bom:${project.hasProperty('bom_version') ? project.bom_version : '5.4.0'}"))
-    compileOnly("org.mongodb:mongodb-driver-sync")
+    implementation("org.mongodb:mongodb-driver-sync")
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
 }
 
@@ -22,16 +27,27 @@ publishing {
     }
 }
 
-version = project.hasProperty('bom_version') ? project.bom_version : '1.0.0'
-
 compileJava {
     sourceCompatibility = '8'
     targetCompatibility = '8'
 }
 
-with copySpec {
-    from 'src/main/resources'
-    filter ReplaceTokens, tokens: [
-            '0.0': version
-    ]
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with copySpec {
+        from 'src/main/resources'
+        filter ReplaceTokens, tokens: [
+                'version': version
+        ]
+    }
 }
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }
+            .collect { zipTree(it) }
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}
+
