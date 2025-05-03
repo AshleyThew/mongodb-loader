@@ -5,11 +5,13 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 }
 
 dependencies {
-    compileOnly(platform("org.mongodb:mongodb-driver-bom:${project.hasProperty('bom_version') ? project.bom_version : '5.4.0'}"))
+    implementation(platform("org.mongodb:mongodb-driver-bom:${project.hasProperty('bom_version') ? project.bom_version : '5.4.0'}"))
     compileOnly("org.mongodb:mongodb-driver-sync")
+    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
 }
 
 publishing {
@@ -21,3 +23,15 @@ publishing {
 }
 
 version = project.hasProperty('bom_version') ? project.bom_version : '1.0.0'
+
+compileJava {
+    sourceCompatibility = '8'
+    targetCompatibility = '8'
+}
+
+with copySpec {
+    from 'src/main/resources'
+    filter ReplaceTokens, tokens: [
+            '0.0': version
+    ]
+}
