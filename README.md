@@ -5,19 +5,20 @@ This plugin connects to MongoDB using the latest `mongodb-driver-sync` library.
 ## Building the Plugin
 
 1. Clone the repository:
+
    ```sh
-   git clone https://github.com/githubnext/workspace-blank.git
-   cd workspace-blank
+   git clone https://github.com/Dablakbandit/mongodb-loader/
+   cd mongodb-loader
    ```
 
 2. Build the plugin with Gradle:
    ```sh
-   ./gradlew build -Pversion=<bom_version>
+   ./gradlew build -Pbom_version=<version>
    ```
 
 ## Using the Plugin
 
-1. Copy the generated JAR file from `build/libs` to your Minecraft server's `plugins` directory.
+1. Copy the generated JAR file from `build/libs/mongodb-loader-<version>.jar` to your Minecraft server's `plugins` directory.
 
 2. Start your Minecraft server. The plugin will automatically connect to MongoDB.
 
@@ -26,6 +27,7 @@ This plugin connects to MongoDB using the latest `mongodb-driver-sync` library.
 1. Update the `bom_version` in `build.gradle`.
 
 2. Commit and push the changes:
+
    ```sh
    git commit -am "Update bom_version"
    git push origin main
