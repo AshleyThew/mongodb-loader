@@ -40,7 +40,6 @@ jobs:
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Delete old release and tag if exists and push
         if: steps.check_release.outputs.exists == 'true' && github.event_name == 'push'
@@ -48,6 +47,7 @@ jobs:
         with:
           script: |
             const tag = '${{ steps.get_bom_version.outputs.bom_version }}';
+            console.log('DEBUG: Deleting release and tag for', tag);
             // Get the release by tag
             let release;
             try {
@@ -56,16 +56,23 @@ jobs:
                 repo: context.repo.repo,
                 tag: tag
               });
+              console.log('DEBUG: Release found:', release.data.id);
             } catch (e) {
+              console.log('DEBUG: Release not found:', e.message);
               // Release does not exist
               return;
             }
             // Delete the release
-            await github.rest.repos.deleteRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: release.data.id
-            });
+            try {
+              await github.rest.repos.deleteRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release.data.id
+              });
+              console.log('DEBUG: Release deleted:', release.data.id);
+            } catch (e) {
+              console.log('DEBUG: Error deleting release:', e.message);
+            }
             // Delete the tag
             try {
               await github.rest.git.deleteRef({
@@ -73,7 +80,9 @@ jobs:
                 repo: context.repo.repo,
                 ref: `tags/${tag}`
               });
+              console.log('DEBUG: Tag deleted:', tag);
             } catch (e) {
+              console.log('DEBUG: Error deleting tag (may not exist):', e.message);
               // Tag may not exist, ignore
             }
 
