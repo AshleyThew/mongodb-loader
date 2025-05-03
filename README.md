@@ -1,6 +1,6 @@
 # Minecraft SpigotMC Plugin
 
-This plugin connects to MongoDB using the latest `mongo-driver-sync` library.
+This plugin connects to MongoDB using the latest `mongodb-driver-sync` library.
 
 ## Building the Plugin
 
@@ -12,7 +12,7 @@ This plugin connects to MongoDB using the latest `mongo-driver-sync` library.
 
 2. Build the plugin with Gradle:
    ```sh
-   ./gradlew build -Pversion=<mongo-driver-sync-version>
+   ./gradlew build -Pversion=<bom_version>
    ```
 
 ## Using the Plugin
@@ -23,11 +23,11 @@ This plugin connects to MongoDB using the latest `mongo-driver-sync` library.
 
 ## Releasing a New Version
 
-1. Update the `mongo-driver-sync` version in `build.gradle`.
+1. Update the `bom_version` in `build.gradle`.
 
 2. Commit and push the changes:
    ```sh
-   git commit -am "Update mongo-driver-sync version"
+   git commit -am "Update bom_version"
    git push origin main
    ```
 

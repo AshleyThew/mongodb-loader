@@ -20,4 +20,4 @@ publishing {
     }
 }
 
-version = project.hasProperty('version') ? project.version : '1.0.0'
+version = project.hasProperty('bom_version') ? project.bom_version : '1.0.0'

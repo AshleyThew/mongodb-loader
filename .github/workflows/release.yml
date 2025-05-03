@@ -17,12 +17,6 @@ jobs:
       with:
         java-version: '11'
 
-    - name: Get latest mongo-driver-sync version
-      id: get_version
-      run: |
-        latest_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-sync/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
-        echo "::set-output name=version::$latest_version"
-
     - name: Get latest mongodb-driver-bom version
       id: get_bom_version
       run: |
@@ -30,15 +24,15 @@ jobs:
         echo "::set-output name=bom_version::$latest_bom_version"
 
     - name: Build with Gradle
-      run: ./gradlew build -Pversion=${{ steps.get_version.outputs.version }} -Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}
+      run: ./gradlew build -Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}
 
     - name: Create Release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.get_version.outputs.version }}
-        release_name: Release ${{ steps.get_version.outputs.version }}
+        tag_name: ${{ steps.get_bom_version.outputs.bom_version }}
+        release_name: Release ${{ steps.get_bom_version.outputs.bom_version }}
         draft: false
         prerelease: false
         files: build/libs/*.jar
