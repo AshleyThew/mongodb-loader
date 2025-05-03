@@ -40,7 +40,6 @@ jobs:
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Delete old release and tag if exists and push
         if: steps.check_release.outputs.exists == 'true' && github.event_name == 'push'
@@ -105,6 +104,23 @@ jobs:
           release_name: Release ${{ steps.get_bom_version.outputs.bom_version }}
           draft: false
           prerelease: false
+
+      - name: Create GitHub Issue to upload to dev.bukkit.org
+        if: steps.create_release.outcome == 'success'
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueTitle = `Upload mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }} to dev.bukkit.org`;
+            const issueBody = `Please upload the new version (mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }}.jar) to dev.bukkit.org.\n\n- [ ] Upload the JAR to dev.bukkit.org\n- [ ] Fill out the changelog and version details\n\n**Deadline:** ${(new Date(Date.now() + 24*60*60*1000)).toISOString().split('T')[0]}\n\nThis issue was automatically created by the release workflow.`;
+            const assignees = ['Dablakbandit'];
+            await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              assignees: assignees
+            });
 
       - name: Upload JAR to Release
         if: steps.check_release.outputs.exists == 'false' || github.event_name == 'push'
