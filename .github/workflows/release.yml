@@ -26,7 +26,7 @@ jobs:
           echo "::set-output name=bom_version::$latest_bom_version"
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
         run: ./gradlew build -Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}
