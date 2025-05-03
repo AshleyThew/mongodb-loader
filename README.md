@@ -1,6 +1,6 @@
-# Minecraft SpigotMC Plugin
+# MongoDB Loader
 
-This plugin connects to MongoDB using the latest `mongodb-driver-sync` library.
+This plugin allows connecting with MongoDB using the latest `mongodb-driver-sync` library.
 
 ## Adding as a Dependency to Your Plugin
 
