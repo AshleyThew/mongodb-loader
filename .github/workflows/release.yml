@@ -40,6 +40,7 @@ jobs:
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Delete old release and tag if exists and push
         if: steps.check_release.outputs.exists == 'true' && github.event_name == 'push'
