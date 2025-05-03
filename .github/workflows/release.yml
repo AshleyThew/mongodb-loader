@@ -25,6 +25,9 @@ jobs:
           latest_bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
           echo "::set-output name=bom_version::$latest_bom_version"
 
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+
       - name: Build with Gradle
         run: ./gradlew build -Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}
 
