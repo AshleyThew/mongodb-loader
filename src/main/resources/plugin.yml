@@ -1,0 +1,6 @@
+name: MinecraftSpigotMCPlugin
+version: @version@
+main: com.example.minecraftplugin.Main
+api-version: 1.16
+description: A Minecraft plugin that connects to MongoDB using mongo-driver-sync.
+author: YourName

@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly(platform("org.mongodb:mongodb-driver-bom:${project.hasProperty('bom_version') ? project.bom_version : '5.4.0'}"))
+    compileOnly("org.mongodb:mongodb-driver-sync")
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+version = project.hasProperty('version') ? project.version : '1.0.0'
