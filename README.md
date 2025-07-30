@@ -111,43 +111,6 @@ Add the dependency:
 </dependency>
 ```
 
-### Usage in Code
-
-When using JitPack, you can directly use the MongoDB helper:
-
-```java
-import me.dablakbandit.mongodbloader.common.MongoDBHelper;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoCollection;
-import org.bson.Document;
-
-public class YourPlugin extends JavaPlugin {
-
-    @Override
-    public void onEnable() {
-        // Initialize MongoDB connection
-        MongoDBHelper.initialize("mongodb://localhost:27017");
-
-        if (MongoDBHelper.isAvailable()) {
-            getLogger().info("MongoDB is available!");
-
-            // Get a database and collection
-            MongoDatabase database = MongoDBHelper.getDatabase("your_database");
-            MongoCollection<Document> collection = database.getCollection("your_collection");
-
-            // Use MongoDB as needed
-            // ...
-        }
-    }
-
-    @Override
-    public void onDisable() {
-        // Close MongoDB connection
-        MongoDBHelper.close();
-    }
-}
-```
-
 ## Building the Plugin
 
 1. Clone the repository:
