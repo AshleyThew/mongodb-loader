@@ -114,7 +114,7 @@ jobs:
           script: |
             const issueTitle = `Upload mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }} to dev.bukkit.org`;
             const issueBody = `Please upload the new version (mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }}.jar) to dev.bukkit.org.\n\n- [ ] Upload the JAR to dev.bukkit.org\n- [ ] Fill out the changelog and version details\n\n**Deadline:** ${(new Date(Date.now() + 24*60*60*1000)).toISOString().split('T')[0]}\n\nThis issue was automatically created by the release workflow.`;
-            const assignees = ['Dablakbandit'];
+            const assignees = ['AshleyThew'];
             await github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
