@@ -2,9 +2,7 @@ jdk:
   - openjdk11
 
 before_install:
-  - chmod +x scripts/get-bom-version.sh
-  - chmod +x scripts/build.sh
-  - ./scripts/get-bom-version.sh
+  - chmod +x scripts/install.sh
 
 install:
-  - ./scripts/build.sh
+  - ./scripts/install.sh
