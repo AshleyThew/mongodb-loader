@@ -78,11 +78,11 @@ Add the dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.github.AshleyThew:mongodb-loader:main-SNAPSHOT'
+    compileOnly 'com.github.AshleyThew:mongodb-loader:main-SNAPSHOT'
 
     // Or use a specific version/tag (these correspond to MongoDB driver versions)
-    // implementation 'com.github.AshleyThew:mongodb-loader:5.4.0'
-    // implementation 'com.github.AshleyThew:mongodb-loader:latest'
+    // compileOnly 'com.github.AshleyThew:mongodb-loader:5.4.0'
+    // compileOnly 'com.github.AshleyThew:mongodb-loader:latest'
 }
 ```
 
