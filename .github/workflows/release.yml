@@ -45,52 +45,6 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Delete old release and tag if exists and push
-        if: steps.check_release.outputs.exists == 'true' && github.event_name == 'push'
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const tag = '${{ steps.get_bom_version.outputs.bom_version }}';
-            console.log('DEBUG: Deleting release and tag for', tag);
-            // Get the release by tag
-            let release;
-            try {
-              release = await github.repos.getReleaseByTag({
-                owner: owner,
-                repo: repo,
-                tag: tag
-              });
-              console.log('DEBUG: Release found:', release.data.id);
-            } catch (e) {
-              console.log('DEBUG: Release not found:', e.message);
-              // Release does not exist
-              return;
-            }
-            // Delete the release
-            try {
-              await github.repos.deleteRelease({
-                owner: owner,
-                repo: repo,
-                release_id: release.data.id
-              });
-              console.log('DEBUG: Release deleted:', release.data.id);
-            } catch (e) {
-              console.log('DEBUG: Error deleting release:', e.message);
-            }
-            // Delete the tag
-            try {
-              await github.git.deleteRef({
-                owner: owner,
-                repo: repo,
-                ref: `tags/${tag}`
-              });
-              console.log('DEBUG: Tag deleted:', tag);
-            } catch (e) {
-              console.log('DEBUG: Error deleting tag (may not exist):', e.message);
-              // Tag may not exist, ignore
-            }
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
