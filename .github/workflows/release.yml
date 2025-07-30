@@ -100,7 +100,7 @@ jobs:
       - name: Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        if: steps.check_release.outputs.exists == 'false'
+        if: steps.check_release.outputs.exists == 'false' || github.event_name == 'push'
         with:
           tag_name: ${{ steps.get_bom_version.outputs.bom_version }}
           name: Release ${{ steps.get_bom_version.outputs.bom_version }}
