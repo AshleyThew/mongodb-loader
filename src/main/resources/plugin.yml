@@ -1,6 +1,6 @@
 name: MongoDBLoader
 version: @version@
-main: me.dablakbandit.mongodbloader.MongoDBLoader
+main: me.dablakbandit.mongodbloader.spigot.MongoDBLoaderSpigot
 api-version: 1.16
 description: A Minecraft plugin that connects to MongoDB.
 author: YourName

@@ -1,0 +1,5 @@
+name: MongoDBLoader
+version: @version@
+main: me.dablakbandit.mongodbloader.bungee.MongoDBLoaderBungee
+description: A BungeeCord plugin that connects to MongoDB.
+author: YourName

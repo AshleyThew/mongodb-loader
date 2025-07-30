@@ -1,0 +1,8 @@
+{
+  "id": "mongodb-loader",
+  "name": "MongoDBLoader",
+  "version": "@version@",
+  "description": "A Sponge plugin that connects to MongoDB.",
+  "authors": ["YourName"],
+  "entrypoint": "me.dablakbandit.mongodbloader.sponge.MongoDBLoaderSponge"
+}

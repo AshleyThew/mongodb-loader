@@ -11,12 +11,27 @@ version = project.hasProperty('bom_version') ? project.bom_version : '1.0.0'
 repositories {
     mavenCentral()
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url 'https://repo.spongepowered.org/maven/' }
+    maven { url 'https://nexus.velocitypowered.com/repository/maven-public/' }
 }
 
 dependencies {
     implementation(platform("org.mongodb:mongodb-driver-bom:${project.hasProperty('bom_version') ? project.bom_version : '5.4.0'}"))
     implementation("org.mongodb:mongodb-driver-sync")
+    
+    // Spigot/Bukkit
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    
+    // BungeeCord
+    compileOnly("net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT")
+    
+    // Velocity
+    compileOnly("com.velocitypowered:velocity-api:3.1.1")
+    annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
+    
+    // Sponge
+    compileOnly("org.spongepowered:spongeapi:8.2.0")
 }
 
 publishing {
@@ -28,8 +43,8 @@ publishing {
 }
 
 compileJava {
-    sourceCompatibility = '8'
-    targetCompatibility = '8'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
 }
 
 processResources {
@@ -40,6 +55,21 @@ processResources {
                 'version': version
         ]
     }
+}
+
+// Process Java sources to replace version tokens
+task processJava(type: Copy) {
+    from 'src/main/java'
+    into 'build/generated-src'
+    filter ReplaceTokens, tokens: [
+            'version': version
+    ]
+}
+
+// Make compileJava depend on processJava and use the processed sources
+compileJava {
+    dependsOn processJava
+    source = 'build/generated-src'
 }
 
 jar {
