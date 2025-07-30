@@ -27,11 +27,19 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Get latest mongodb-driver-bom version
+      - name: Get mongodb-driver-bom version
         id: get_bom_version
         run: |
-          latest_bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
-          echo "::set-output name=bom_version::$latest_bom_version"
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            # Use the tag name as the BOM version
+            bom_version="${{ github.ref_name }}"
+            echo "Using tag version: $bom_version"
+          else
+            # Get latest version from Maven Central
+            bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
+            echo "Using latest version from Maven Central: $bom_version"
+          fi
+          echo "::set-output name=bom_version::$bom_version"
 
       - name: Check if version contains alpha
         id: check_alpha
