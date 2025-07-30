@@ -11,4 +11,3 @@ else
 fi
 
 export BOM_VERSION=$latest_bom_version
-echo "BOM_VERSION=$latest_bom_version" >> $GITHUB_ENV

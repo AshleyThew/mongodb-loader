@@ -3,8 +3,4 @@ build/
 bin/
 local.properties
 
-gradle-wrapper.jar
 .gradle/
-gradle-wrapper.properties  
-gradlew
-gradlew.bat
