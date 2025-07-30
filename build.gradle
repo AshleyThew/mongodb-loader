@@ -6,6 +6,7 @@ plugins {
 
 import org.apache.tools.ant.filters.ReplaceTokens
 
+group = 'me.dablakbandit'
 version = project.hasProperty('bom_version') ? project.bom_version : '1.0.0'
 
 repositories {

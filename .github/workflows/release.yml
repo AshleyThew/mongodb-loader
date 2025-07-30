@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -31,8 +33,21 @@ jobs:
           latest_bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
           echo "::set-output name=bom_version::$latest_bom_version"
 
+      - name: Check if version contains alpha
+        id: check_alpha
+        run: |
+          bom_version="${{ steps.get_bom_version.outputs.bom_version }}"
+          if [[ "$bom_version" == *"alpha"* ]]; then
+            echo "contains_alpha=true" >> $GITHUB_OUTPUT
+            echo "Skipping release because version $bom_version contains 'alpha'"
+          else
+            echo "contains_alpha=false" >> $GITHUB_OUTPUT
+            echo "Version $bom_version is stable, proceeding with release"
+          fi
+
       - name: Check if release exists
         id: check_release
+        if: steps.check_alpha.outputs.contains_alpha == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,22 +61,24 @@ jobs:
           fi
 
       - name: Set up Gradle
+        if: steps.check_alpha.outputs.contains_alpha == 'false'
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
+        if: steps.check_alpha.outputs.contains_alpha == 'false'
         run: gradle build "-Pbom_version=${{ steps.get_bom_version.outputs.bom_version }}"
 
       - name: Release
         id: create_release
         uses: softprops/action-gh-release@v2
-        if: steps.check_release.outputs.exists == 'false' || github.event_name == 'push'
+        if: steps.check_alpha.outputs.contains_alpha == 'false' && (steps.check_release.outputs.exists == 'false' || github.event_name == 'push')
         with:
           tag_name: ${{ steps.get_bom_version.outputs.bom_version }}
           name: Release ${{ steps.get_bom_version.outputs.bom_version }}
           files: build/libs/mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }}.jar
 
       - name: Create GitHub Issue to upload to dev.bukkit.org
-        if: steps.create_release.outcome == 'success'
+        if: steps.create_release.outcome == 'success' && steps.check_alpha.outputs.contains_alpha == 'false'
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
