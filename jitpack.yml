@@ -2,12 +2,9 @@ jdk:
   - openjdk11
 
 before_install:
-  - echo "Getting latest MongoDB driver BOM version..."
-  - 'latest_bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")'
-  - 'if [ -z "$latest_bom_version" ]; then latest_bom_version="5.4.0"; fi'
-  - echo "Using BOM version: $latest_bom_version"
-  - export BOM_VERSION=$latest_bom_version
+  - chmod +x scripts/get-bom-version.sh
+  - chmod +x scripts/build.sh
+  - ./scripts/get-bom-version.sh
 
 install:
-  - echo "Building with BOM version: $BOM_VERSION"
-  - ./gradlew build "-Pbom_version=$BOM_VERSION" --no-daemon
+  - ./scripts/build.sh
