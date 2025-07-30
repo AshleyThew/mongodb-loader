@@ -15,15 +15,11 @@ import java.nio.file.Path;
 @Plugin(id = "mongodb-loader", name = "MongoDBLoader", version = "@version@", authors = { "YourName" })
 public class MongoDBLoaderVelocity implements MongoDBLoaderCommon {
 
-    private final ProxyServer server;
     private final Logger logger;
-    private final Path dataDirectory;
 
     @Inject
     public MongoDBLoaderVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
-        this.server = server;
         this.logger = logger;
-        this.dataDirectory = dataDirectory;
     }
 
     @Subscribe
