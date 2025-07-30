@@ -13,4 +13,4 @@ fi
 export BOM_VERSION=$latest_bom_version
 
 echo "Building with BOM version: $BOM_VERSION"
-./gradlew clean install "-Pbom_version=$BOM_VERSION"
+./gradlew clean build publishToMavenLocal "-Pbom_version=$BOM_VERSION"
