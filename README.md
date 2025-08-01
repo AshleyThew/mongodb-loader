@@ -7,6 +7,31 @@ This plugin allows connecting with MongoDB using the latest `mongodb-driver-sync
 - **Velocity** - Modern, high-performance proxy server
 - **Sponge** - Plugin platform for Minecraft servers
 
+## Installation for Server Owners
+
+MongoDB Loader is a library plugin that other plugins depend on to connect to MongoDB databases. If you have plugins that require MongoDB Loader, follow these steps:
+
+1. Download the latest `mongodb-loader-<version>.jar` from the [releases page](https://github.com/AshleyThew/mongodb-loader/releases).
+
+2. Copy the JAR file to your server's plugins directory:
+
+   - **Bukkit/Spigot/Paper**: Copy to `plugins/` directory
+   - **BungeeCord**: Copy to `plugins/` directory
+   - **Velocity**: Copy to `plugins/` directory
+   - **Sponge**: Copy to `mods/` directory
+
+3. Start your server. The plugin will automatically detect the platform and load the appropriate implementation.
+
+4. Install any plugins that depend on MongoDB Loader.
+
+**Note**: MongoDB Loader is a dependency plugin - it doesn't add any gameplay features by itself. It provides MongoDB database connectivity for other plugins that need it.
+
+---
+
+## Developer Documentation
+
+The following sections are for plugin developers who want to use MongoDB Loader in their projects.
+
 ## Adding as a Dependency to Your Plugin
 
 To use MongoDB Loader in your own plugin, add the following to your plugin configuration:
@@ -279,17 +304,6 @@ Add the dependency:
 This will create a single universal JAR in the `build/libs/` directory:
 
 - `mongodb-loader-<version>.jar` - Works on all supported platforms (Bukkit, BungeeCord, Velocity, Sponge)
-
-## Using the Plugin
-
-1. Copy the generated JAR file `mongodb-loader-<version>.jar` to your server's plugins directory:
-
-   - **Bukkit/Spigot/Paper**: Copy to `plugins/` directory
-   - **BungeeCord**: Copy to `plugins/` directory
-   - **Velocity**: Copy to `plugins/` directory
-   - **Sponge**: Copy to `mods/` directory
-
-2. Start your server. The plugin will automatically detect the platform and load the appropriate implementation.
 
 ## Releasing a New Version
 

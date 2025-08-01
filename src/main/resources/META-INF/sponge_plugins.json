@@ -1,0 +1,35 @@
+{
+  "loader": {
+    "name": "java_plain",
+    "version": "1.0"
+  },
+  "license": "GPL-3.0",
+  "plugins": [
+    {
+      "id": "mongodb-loader",
+      "entrypoint": "me.dablakbandit.mongodbloader.sponge.MongoDBLoaderSponge",
+      "name": "MongoDBLoader",
+      "description": "A Sponge plugin that connects to MongoDB.",
+      "version": "@version@",
+      "branding": {},
+      "links": {
+        "homepage": "https://github.com/AshleyThew/mongodb-loader",
+        "source": "https://github.com/AshleyThew/mongodb-loader",
+        "issues": "https://github.com/AshleyThew/mongodb-loader/issues"
+      },
+      "contributors": [
+        {
+          "name": "Dablakbandit",
+          "description": "Developer"
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "spongeapi",
+          "version": "8.0.0",
+          "optional": false
+        }
+      ]
+    }
+  ]
+}
