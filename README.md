@@ -60,6 +60,157 @@ public class YourPlugin {
 
 This ensures your plugin loads in the correct order and can interact with MongoDB Loader if present.
 
+## Usage Example
+
+Once you have MongoDB Loader as a dependency, you can use the MongoDB driver in your plugin. Here's a complete example:
+
+### Basic MongoDB Connection and Operations
+
+```java
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class YourPlugin extends JavaPlugin {
+
+    private MongoClient mongoClient;
+    private MongoDatabase database;
+
+    @Override
+    public void onEnable() {
+        // Connect to MongoDB
+        connectToMongoDB();
+
+        // Example usage
+        savePlayerData("player123", "ExamplePlayer", 100);
+        PlayerData data = getPlayerData("player123");
+        getLogger().info("Player: " + data.name + ", Score: " + data.score);
+    }
+
+    @Override
+    public void onDisable() {
+        // Close MongoDB connection
+        if (mongoClient != null) {
+            mongoClient.close();
+        }
+    }
+
+    private void connectToMongoDB() {
+        try {
+            // Connect to MongoDB (replace with your connection string)
+            String connectionString = "mongodb://localhost:27017";
+            mongoClient = MongoClients.create(connectionString);
+
+            // Get database (creates it if it doesn't exist)
+            database = mongoClient.getDatabase("minecraft_server");
+
+            getLogger().info("Successfully connected to MongoDB!");
+
+        } catch (Exception e) {
+            getLogger().severe("Failed to connect to MongoDB: " + e.getMessage());
+        }
+    }
+
+    // Example: Save player data
+    public void savePlayerData(String playerId, String playerName, int score) {
+        try {
+            MongoCollection<Document> collection = database.getCollection("players");
+
+            Document playerDoc = new Document("_id", playerId)
+                    .append("name", playerName)
+                    .append("score", score)
+                    .append("lastSeen", System.currentTimeMillis());
+
+            // Use upsert to insert or update
+            collection.replaceOne(
+                new Document("_id", playerId),
+                playerDoc,
+                new com.mongodb.client.model.ReplaceOptions().upsert(true)
+            );
+
+            getLogger().info("Saved data for player: " + playerName);
+
+        } catch (Exception e) {
+            getLogger().severe("Failed to save player data: " + e.getMessage());
+        }
+    }
+
+    // Example: Get player data
+    public PlayerData getPlayerData(String playerId) {
+        try {
+            MongoCollection<Document> collection = database.getCollection("players");
+
+            Document playerDoc = collection.find(new Document("_id", playerId)).first();
+
+            if (playerDoc != null) {
+                return new PlayerData(
+                    playerDoc.getString("name"),
+                    playerDoc.getInteger("score", 0)
+                );
+            }
+
+        } catch (Exception e) {
+            getLogger().severe("Failed to get player data: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    // Simple data class
+    public static class PlayerData {
+        public final String name;
+        public final int score;
+
+        public PlayerData(String name, int score) {
+            this.name = name;
+            this.score = score;
+        }
+    }
+}
+```
+
+### Configuration Example
+
+Add MongoDB settings to your `config.yml`:
+
+```yaml
+mongodb:
+  connection-string: 'mongodb://localhost:27017'
+  database-name: 'minecraft_server'
+# Alternative with authentication
+# mongodb:
+#   connection-string: "mongodb://username:password@localhost:27017/database_name"
+#   database-name: "minecraft_server"
+```
+
+And load it in your plugin:
+
+```java
+private void loadConfig() {
+    saveDefaultConfig();
+    String connectionString = getConfig().getString("mongodb.connection-string");
+    String databaseName = getConfig().getString("mongodb.database-name");
+
+    mongoClient = MongoClients.create(connectionString);
+    database = mongoClient.getDatabase(databaseName);
+}
+```
+
+### Advanced Features
+
+The MongoDB driver included supports all modern MongoDB features:
+
+- **Transactions**: For multi-document ACID operations
+- **Aggregation Pipeline**: For complex data processing
+- **Change Streams**: For real-time data monitoring
+- **GridFS**: For storing large files
+- **Indexes**: For query optimization
+
+For more advanced usage, refer to the [MongoDB Java Driver Documentation](https://mongodb.github.io/mongo-java-driver/).
+
 ## Using MongoDB Loader as a Gradle Dependency (JitPack)
 
 You can also include MongoDB Loader directly in your project using JitPack instead of loading it as a separate plugin.
