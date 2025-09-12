@@ -30,7 +30,6 @@ dependencies {
     
     // BungeeCord
     compileOnly 'net.md-5:bungeecord-api:1.20-R0.3-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-proxy:1.20-R0.3-SNAPSHOT'
     
     // Velocity
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
