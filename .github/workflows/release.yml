@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -39,7 +39,7 @@ jobs:
             bom_version=$(curl -s https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-bom/maven-metadata.xml | grep -oPm1 "(?<=<latest>)[^<]+")
             echo "Using latest version from Maven Central: $bom_version"
           fi
-          echo "::set-output name=bom_version::$bom_version"
+          echo "bom_version=$bom_version" >> $GITHUB_OUTPUT
 
       - name: Check if version contains alpha
         id: check_alpha
@@ -70,7 +70,7 @@ jobs:
 
       - name: Set up Gradle
         if: steps.check_alpha.outputs.contains_alpha == 'false'
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build with Gradle
         if: steps.check_alpha.outputs.contains_alpha == 'false'
@@ -78,7 +78,7 @@ jobs:
 
       - name: Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: steps.check_alpha.outputs.contains_alpha == 'false' && (steps.check_release.outputs.exists == 'false' || github.event_name == 'push')
         with:
           tag_name: ${{ steps.get_bom_version.outputs.bom_version }}
@@ -87,14 +87,14 @@ jobs:
 
       - name: Create GitHub Issue to upload to dev.bukkit.org
         if: steps.create_release.outcome == 'success' && steps.check_alpha.outputs.contains_alpha == 'false'
-        uses: actions/github-script@v4
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issueTitle = `Upload mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }} to dev.bukkit.org`;
             const issueBody = `Please upload the new version (mongodb-loader-${{ steps.get_bom_version.outputs.bom_version }}.jar) to dev.bukkit.org.\n\n- [ ] Upload the JAR to dev.bukkit.org\n- [ ] Fill out the changelog and version details\n\n**Deadline:** ${(new Date(Date.now() + 24*60*60*1000)).toISOString().split('T')[0]}\n\nThis issue was automatically created by the release workflow.`;
             const assignees = ['AshleyThew'];
-            await github.issues.create({
+            await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: issueTitle,
